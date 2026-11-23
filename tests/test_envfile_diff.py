@@ -232,3 +232,46 @@ class TestCommandLine:
         assert self.run([older, newer]) == 2
         captured = capsys.readouterr()
         assert "KEY=VALUE" in captured.err
+
+
+class TestRigour:
+    """Branches behind the obvious ones: unmasked values and empty sides."""
+
+    def test_show_values_prints_the_values(self):
+        from envfile_diff import render
+
+        diff = diff_env(parse_env("A=1\n"), parse_env("A=2\n"))
+        assert "1" in render(diff, show_values=True)
+        assert "2" in render(diff, show_values=True)
+
+    def test_a_removed_key_renders_an_empty_side(self):
+        from envfile_diff import render
+
+        diff = diff_env(parse_env("A=1\n"), parse_env(""))
+        assert render(diff) == "- A=***"
+
+    def test_unchanged_lines_can_be_included(self):
+        from envfile_diff import render
+
+        diff = diff_env(parse_env("A=1\nB=2\n"), parse_env("A=1\n"))
+        assert "= A=***" in render(diff, include_unchanged=True)
+
+    def test_a_value_that_is_only_quotes(self):
+        assert parse_env('A=""\n')["A"] == ""
+        assert parse_env("A=''\n")["A"] == ""
+
+
+class TestRigour2:
+    """Values shown on both sides of a change, including the empty side."""
+
+    def test_a_removed_key_with_values_shown(self):
+        from envfile_diff import render
+
+        diff = diff_env(parse_env("A=1\n"), parse_env(""))
+        assert render(diff, show_values=True) == "- A=1"
+
+    def test_an_added_key_with_values_shown(self):
+        from envfile_diff import render
+
+        diff = diff_env(parse_env(""), parse_env("A=1\n"))
+        assert render(diff, show_values=True) == "+ A=1"

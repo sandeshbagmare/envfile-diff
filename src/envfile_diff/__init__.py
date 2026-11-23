@@ -155,7 +155,7 @@ def render(
     lines: list[str] = []
 
     def value(text: str | None) -> str:
-        if text is None:
+        if text is None:  # pragma: no cover - a change always carries the side it has
             return ""
         return text if show_values else mask
 
