@@ -2,7 +2,7 @@
 
     >>> from envfile_diff import diff_env, parse_env, render
     >>> render(diff_env(parse_env("A=1\\nB=2\\n"), parse_env("B=3\\nC=4\\n")))
-    '+ C=***\\n- A=***\\n~ B=***'
+    '- A=***\\n~ B=*** (changed)\\n+ C=***'
 
 Environments drift: a key is added in staging and never in production, or a value
 changes in a file nobody read. Printing the files side by side leaks secrets into
