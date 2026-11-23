@@ -1,24 +1,23 @@
-# envfile-diff
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sandeshbagmare/envfile-diff/main/assets/banner.svg" width="100%" alt="envfile-diff: diff two .env files without printing the secrets">
+</p>
 
-Compare two `.env` files by key — with the secret values masked.
+<p align="center">
+  <a href="https://pypi.org/project/envfile-diff/"><img alt="PyPI version" src="https://img.shields.io/pypi/v/envfile-diff.svg"></a>
+  <a href="https://pypi.org/project/envfile-diff/"><img alt="Python versions" src="https://img.shields.io/pypi/pyversions/envfile-diff.svg"></a>
+  <a href="https://pypi.org/project/envfile-diff/"><img alt="Downloads" src="https://img.shields.io/pypi/dm/envfile-diff.svg"></a>
+  <a href="https://github.com/sandeshbagmare/envfile-diff/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/sandeshbagmare/envfile-diff/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/sandeshbagmare/envfile-diff/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/pypi/l/envfile-diff.svg"></a>
+  <a href="https://sandeshbagmare.github.io/envfile-diff/"><img alt="docs" src="https://img.shields.io/badge/docs-online-2ea44f.svg"></a>
+  <a href="https://pypi.org/project/envfile-diff/"><img alt="zero dependencies" src="https://img.shields.io/badge/dependencies-0-2ea44f.svg"></a>
+</p>
 
-[![PyPI](https://img.shields.io/pypi/v/envfile-diff.svg)](https://pypi.org/project/envfile-diff/)
-[![Python](https://img.shields.io/pypi/pyversions/envfile-diff.svg)](https://pypi.org/project/envfile-diff/)
-[![tests](https://github.com/sandeshbagmare/envfile-diff/actions/workflows/ci.yml/badge.svg)](https://github.com/sandeshbagmare/envfile-diff/actions/workflows/ci.yml)
-[![license](https://img.shields.io/pypi/l/envfile-diff.svg)](https://github.com/sandeshbagmare/envfile-diff/blob/main/LICENSE)
+<h3 align="center">diff two .env files without printing the secrets</h3>
+<p align="center"><em>Standard library only. No runtime dependencies. Python 3.9+.</em></p>
 
-```console
-$ envfile-diff .env.staging .env.production
-+ NEW_RELIC_KEY=***
-- LEGACY_TOKEN=***
-~ DATABASE_URL=*** (changed)
-1 added, 1 removed, 1 changed
-```
-
-`diff .env.staging .env.production` prints your production passwords into the
-terminal, the transcript and the CI log. This prints the keys and masks the values,
-so a review conversation can happen without a secrets leak. Add `--show-values` when
-you are on your own machine and actually need them.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/sandeshbagmare/envfile-diff/main/assets/how.svg" width="720" alt="how envfile-diff fits in">
+</p>
 
 ## Install
 

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>envfile-diff — diff two .env files without printing the secrets</title>
+<meta name="description" content="Diff two .env files without printing the secrets. Standard library only, Python 3.9+.">
+<meta property="og:title" content="envfile-diff — diff two .env files without printing the secrets">
+<meta property="og:description" content="Diff two .env files without printing the secrets. Standard library only, Python 3.9+.">
+<meta property="og:image" content="https://raw.githubusercontent.com/sandeshbagmare/envfile-diff/main/assets/banner.svg">
+<meta property="og:type" content="website">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<style>
+  :root {
+    --bg: hsl(32 45% 8%);
+    --ink: #e6edf6;
+    --muted: #9fb0c6;
+    --line: hsl(32 35% 26%);
+    --accent: hsl(8 88% 66%);
+    --soft: hsl(8 92% 80%);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: var(--soft); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  header {
+    position: sticky; top: 0; z-index: 9; display: flex; gap: 18px; align-items: center;
+    padding: 14px 24px; background: rgba(8, 12, 20, 0.86); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  header .mark { width: 26px; height: 26px; }
+  header strong { font-family: ui-monospace, monospace; letter-spacing: 0.02em; }
+  header nav { margin-left: auto; display: flex; gap: 16px; font-size: 14px; }
+  .hero { max-width: 1180px; margin: 0 auto; padding: 18px 20px 0; }
+  .hero img { width: 100%; border-radius: 14px; box-shadow: 0 18px 50px rgba(0,0,0,0.45); }
+  main { max-width: 900px; margin: 0 auto; padding: 28px 20px 80px; }
+  h1, h2, h3, h4 { line-height: 1.25; }
+  h2 { margin-top: 44px; padding-top: 18px; border-top: 1px solid var(--line); }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em;
+    background: rgba(148, 163, 184, 0.15); padding: 1px 5px; border-radius: 5px;
+  }
+  pre.code {
+    position: relative; background: #070b12; border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px; overflow-x: auto;
+  }
+  pre.code code { background: none; padding: 0; font-size: 14px; }
+  pre .lang {
+    position: absolute; top: 8px; right: 12px; font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; }
+  img { max-width: 100%; }
+  blockquote {
+    margin: 18px 0; padding: 4px 16px; border-left: 3px solid var(--accent);
+    color: var(--muted);
+  }
+  footer {
+    border-top: 1px solid var(--line); padding: 26px 20px; color: var(--muted);
+    font-size: 14px; text-align: center;
+  }
+</style>
+</head>
+<body>
+<header>
+  <img class="mark" src="../assets/logo.svg" alt="">
+  <strong>envfile-diff</strong>
+  <nav>
+    <a href="https://pypi.org/project/envfile-diff/">PyPI</a>
+    <a href="https://github.com/sandeshbagmare/envfile-diff">GitHub</a>
+    <a href="https://github.com/sandeshbagmare/envfile-diff/issues">Issues</a>
+    <a href="https://github.com/sandeshbagmare/envfile-diff/blob/main/CHANGELOG.md">Changelog</a>
+  </nav>
+</header>
+<div class="hero"><img src="../assets/banner.svg" alt="envfile-diff"></div>
+<main>
+<p align="center">
+  <img src="../assets/how.svg" width="720" alt="how envfile-diff fits in">
+</p>
+<h2>Install</h2>
+<pre class="code"><span class="lang">console</span><code>pip install envfile-diff</code></pre>
+<h2>Use</h2>
+<pre class="code"><span class="lang">console</span><code>envfile-diff old.env new.env                  # masked
+envfile-diff old.env new.env --show-values    # the real values
+envfile-diff old.env new.env --json           # {&quot;added&quot;: [...], &quot;removed&quot;: [...], ...}
+envfile-diff old.env new.env --exit-code      # CI gate: exit 1 when they differ</code></pre>
+<pre class="code"><span class="lang">python</span><code>from envfile_diff import diff_env, diff_files, parse_env, render
+
+diff = diff_files(&quot;.env.staging&quot;, &quot;.env.production&quot;)
+diff.is_empty
+diff.added, diff.removed, diff.changed, diff.unchanged
+for change in diff.changes():          # sorted by key
+    print(change.key, change.kind)     # &quot;added&quot;, &quot;removed&quot; or &quot;changed&quot;
+print(render(diff, show_values=False))</code></pre>
+<h2>What the parser understands</h2>
+<ul>
+<li>comments and blank lines, <code>export KEY=value</code></li>
+<li><code>KEY=</code> (empty), spaces around <code>=</code></li>
+<li><code>"double quoted"</code> values with <code>\n</code>, <code>\t</code>, <code>\r</code>, <code>\"</code>, <code>\\</code> escapes</li>
+<li><code>'single quoted'</code> values, taken literally, <code>#</code> inside any quotes</li>
+<li>a trailing <code># comment</code> after an unquoted value</li>
+<li>CRLF files, keys with dots or dashes (<code>DB.HOST</code>, <code>MY-KEY</code>)</li>
+<li>a repeated key keeps the last value, as a shell does</li>
+</ul>
+<p>A line that is not an assignment raises <code>EnvParseError</code> with the line number instead of being silently dropped — a typo in a <code>.env</code> file is exactly the kind of thing you want to hear about.</p>
+<h2>Values never leak by accident</h2>
+<p>Masking is the default in the function (<code>render(show_values=False)</code>), in the CLI and in <code>--json</code>. Even with <code>--json</code> the payload holds key names only; <code>--json --show-values</code> is the one combination that prints values.</p>
+<h2>Development</h2>
+<pre class="code"><span class="lang">console</span><code>python -m venv .venv
+.venv/bin/pip install -e &quot;.[test]&quot;
+.venv/bin/pytest</code></pre>
+<h2>License</h2>
+<p>MIT.</p>
+</main>
+<footer>
+  envfile-diff · MIT · standard library only ·
+  <a href="https://github.com/sandeshbagmare/envfile-diff">source</a> ·
+  <a href="https://pypi.org/project/envfile-diff/">pip install envfile-diff</a>
+</footer>
+</body>
+</html>
